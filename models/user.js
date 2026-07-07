@@ -18,10 +18,9 @@ User.init(
             primaryKey: true,
             autoIncrement: true
         },
-        userId:  {
+        userId: {
             type: DataTypes.STRING(30),
             allowNull: false,
-            unique: true,
             comment: 'Auto Generated Login Handle'
         },
         passwordHash: {
@@ -51,14 +50,21 @@ User.init(
         sequelize,
         modelName: 'User',
         tableName: 'users',
-        timestamps: true // adds createdAt, updatedAt automatically
+        timestamps: true,
+        indexes: [
+            {
+                unique: true,
+                fields: ['userId'],
+                name: 'users_userId_unique'
+            }
+        ]
     }
 );
 
 // ----- Hooks -----
 // Before any save, hash the password if it has been changed.
-User.addHook('beforeSave', async(user) => {
-    if(user.changed('passwordHash')) {
+User.addHook('beforeSave', async (user) => {
+    if (user.changed('passwordHash')) {
         const salt = await bcrypt.genSalt(12);
         user.passwordHash = await bcrypt.hash(user.passwordHash, salt);
     }

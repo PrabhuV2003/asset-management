@@ -11,15 +11,15 @@ Employee.hasOne(User, {
     as: 'account'
 });
 
-User.belognsTo(Employee, {
-    foreignKey: 'employeeId',
-    as: 'employee'
+User.belongsTo(Employee, {
+  foreignKey: 'employeeId',
+  as: 'employee'
 });
 
 // ----- Sync -----
 // alter: true updates the table schema if models change - safe for development.
 // In production I use migrations instead.
-const syncDatabase = async  =>{
+const syncDatabase = async () =>{
     try {
         await sequelize.authenticate();
         console.log('Database connection established.');

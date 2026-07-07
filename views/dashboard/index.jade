@@ -7,7 +7,6 @@ block content
       | Dashboard
     p.text-muted Logged in as #[strong= userHandle] · #[span.badge.bg-primary= displayName]
 
-  //- ── Employee Master Dashboard ───────────────────────────────────────────
   if role === 'employee_master'
     .row.g-4
       .col-md-3
@@ -34,12 +33,9 @@ block content
             i.bi.bi-trash.text-danger(style="font-size: 2rem")
             h2.mt-2.fw-bold --
             p.text-muted.mb-0 Scrapped Assets
-
     .alert.alert-info.mt-4
       i.bi.bi-info-circle.me-2
       | More dashboard data will be available as you complete setup.
-
-  //- ── Asset Master Dashboard ──────────────────────────────────────────────
   else if role === 'asset_master'
     .row.g-4
       .col-md-4
@@ -60,12 +56,9 @@ block content
             i.bi.bi-arrow-return-left.text-warning(style="font-size: 2rem")
             h2.mt-2.fw-bold --
             p.text-muted.mb-0 Returned Today
-
     .alert.alert-info.mt-4
       i.bi.bi-info-circle.me-2
       | More dashboard data will be available as you complete setup.
-
-  //- ── Employee Dashboard ───────────────────────────────────────────────────
   else
     .card.border-0.shadow-sm
       .card-body.p-4
