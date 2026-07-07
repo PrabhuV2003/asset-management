@@ -1,0 +1,52 @@
+extends ../layout
+
+block content
+  .min-vh-100.d-flex.align-items-center.justify-content-center.bg-light
+    .card.shadow-lg(style="width: 420px;")
+      .card-body.p-5
+        .text-center.mb-4
+          i.bi.bi-archive-fill.text-primary(style="font-size: 2.5rem")
+          h1.h4.mt-2.fw-bold Asset Management
+          p.text-muted.small Sign in with your company credentials
+
+        //- Flash error (shown above the form)
+        if error && error.length
+          each msg in error
+            .alert.alert-danger.small
+              i.bi.bi-exclamation-triangle.me-1
+              = msg
+
+        form(action="/login" method="POST" novalidate)
+          .mb-3
+            label.form-label.fw-semibold(for="userId") User ID
+            .input-group
+              span.input-group-text
+                i.bi.bi-person
+              input#userId.form-control(
+                type="text"
+                name="userId"
+                placeholder="e.g. EMP-2024-001"
+                required
+                autocomplete="username"
+              )
+
+          .mb-4
+            label.form-label.fw-semibold(for="password") Password
+            .input-group
+              span.input-group-text
+                i.bi.bi-lock
+              input#password.form-control(
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+                required
+                autocomplete="current-password"
+              )
+
+          button.btn.btn-primary.w-100.py-2(type="submit")
+            i.bi.bi-box-arrow-in-right.me-2
+            | Sign In
+
+        .text-center.mt-3
+          small.text-muted
+            | Forgot your credentials? Contact your system administrator.

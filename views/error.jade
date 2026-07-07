@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  .min-vh-100.d-flex.align-items-center.justify-content-center
+    .text-center
+      .display-1.fw-bold.text-primary= statusCode || '?'
+      h1.h3.mt-2= title || 'Error'
+      p.text-muted.mb-4= message || 'An unexpected error occurred.'
+      a.btn.btn-primary(href="/")
+        i.bi.bi-house.me-2
+        | Go Home

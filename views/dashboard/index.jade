@@ -1,0 +1,75 @@
+extends ../layout
+
+block content
+  .mb-4
+    h1.h3.fw-bold
+      i.bi.bi-speedometer2.me-2.text-primary
+      | Dashboard
+    p.text-muted Logged in as #[strong= userHandle] · #[span.badge.bg-primary= displayName]
+
+  //- ── Employee Master Dashboard ───────────────────────────────────────────
+  if role === 'employee_master'
+    .row.g-4
+      .col-md-3
+        .card.border-0.shadow-sm.h-100
+          .card-body.text-center
+            i.bi.bi-people-fill.text-primary(style="font-size: 2rem")
+            h2.mt-2.fw-bold --
+            p.text-muted.mb-0 Total Employees
+      .col-md-3
+        .card.border-0.shadow-sm.h-100
+          .card-body.text-center
+            i.bi.bi-laptop.text-success(style="font-size: 2rem")
+            h2.mt-2.fw-bold --
+            p.text-muted.mb-0 Assets in Stock
+      .col-md-3
+        .card.border-0.shadow-sm.h-100
+          .card-body.text-center
+            i.bi.bi-arrow-right-circle.text-warning(style="font-size: 2rem")
+            h2.mt-2.fw-bold --
+            p.text-muted.mb-0 Assets Issued
+      .col-md-3
+        .card.border-0.shadow-sm.h-100
+          .card-body.text-center
+            i.bi.bi-trash.text-danger(style="font-size: 2rem")
+            h2.mt-2.fw-bold --
+            p.text-muted.mb-0 Scrapped Assets
+
+    .alert.alert-info.mt-4
+      i.bi.bi-info-circle.me-2
+      | More dashboard data will be available as you complete setup.
+
+  //- ── Asset Master Dashboard ──────────────────────────────────────────────
+  else if role === 'asset_master'
+    .row.g-4
+      .col-md-4
+        .card.border-0.shadow-sm.h-100
+          .card-body.text-center
+            i.bi.bi-box-seam.text-primary(style="font-size: 2rem")
+            h2.mt-2.fw-bold --
+            p.text-muted.mb-0 Assets in Stock
+      .col-md-4
+        .card.border-0.shadow-sm.h-100
+          .card-body.text-center
+            i.bi.bi-arrow-repeat.text-success(style="font-size: 2rem")
+            h2.mt-2.fw-bold --
+            p.text-muted.mb-0 Issued Today
+      .col-md-4
+        .card.border-0.shadow-sm.h-100
+          .card-body.text-center
+            i.bi.bi-arrow-return-left.text-warning(style="font-size: 2rem")
+            h2.mt-2.fw-bold --
+            p.text-muted.mb-0 Returned Today
+
+    .alert.alert-info.mt-4
+      i.bi.bi-info-circle.me-2
+      | More dashboard data will be available as you complete setup.
+
+  //- ── Employee Dashboard ───────────────────────────────────────────────────
+  else
+    .card.border-0.shadow-sm
+      .card-body.p-4
+        h2.h5.fw-bold
+          i.bi.bi-card-checklist.me-2.text-primary
+          | My Assigned Assets
+        p.text-muted You currently have no assets assigned. Your assets will appear here once issued.
