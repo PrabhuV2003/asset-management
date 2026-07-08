@@ -1,0 +1,113 @@
+extends ../layout
+
+block content
+    .d-flex.align-items-center.mb-4
+        a.btn.btn-outline-secondary.me-3(href='/employees')
+            i.bi.bi-arrow-left
+        div
+            h1.h3.fw-bolf
+                i.bi.bi-person-plus.me-2.text-primary
+                |  Add Employee
+            p.text-muted.mb-0 Create a New Employee Profile And System Login 
+    
+    .row
+        .col-lg-8
+            .card.border-0.shadow-sm
+                .card-body.p-4
+
+                    if errors && errors.length 
+                        .alert.alert-danger 
+                            ul.mb-0
+                                each err in errors
+                                    li= err
+                                
+                    form(action='/employees' method="POST" novalidate)
+
+                        h6.fw-semibold.text-muted.text-uppercase.mb-3 Profile Information
+
+                        .row.g-3
+                            .col-md-6
+                                Label.form-label.fw-semibold(for="fullName") Full Name *
+                                input#fullName.form-control(
+                                    type="text"
+                                    name="fullName"
+                                    value=formData.fullName || ''
+                                    placeholder="e.g. Prabhu V"
+                                    required
+                                )
+
+                            .col-md-6
+                                label.form-label.fw-semibold(for="email") Email Address *
+                                input#email.form-control(
+                                    type='email'
+                                    name='email'
+                                    value=formData.email || ''
+                                    placeholder="prabhu@company.com"
+                                    required
+                                )
+
+                            .col-md-6
+                                label.form-label.fw-semibold(for="phone") Phone Number
+                                input#phone.form-control(
+                                    type= 'tel'
+                                    name= 'phonw'
+                                    Value=formData.phone ||  ''
+                                    placeholder= "+91 9876543210"
+                                )
+                            
+                            .col-md-6
+                                label.form-label.fw-semibold(for="joinDate") Join Date
+                                input#joinDate.form-control(
+                                    type='date'
+                                    name='joinDate'
+                                    value=formData.joinDate ||''
+                                )
+
+                            .col-md-6
+                                label.form-label.fw-semibold(for="department") Department
+                                input#department.form-contril(
+                                    type="text"
+                                    name='Department'
+                                    value=formData.department || ''
+                                    placeholder="e.g, Product Development"
+                                )
+
+                            .col-md-6
+                                label.form-label.fw-semibold(for="branch") Brand / Location
+                                input#branch.form-control(
+                                    type='text'
+                                    name='branch'
+                                    value=formData.branch || ''
+                                    placeholder='e.g. Coimbatore Head office'
+                                )
+
+                            .col-12
+                                label.form-label.fw-semibold(for='designation') Designation
+                                input#designation.form-control(
+                                    typr='text'
+                                    name='designation'
+                                    value=formData.designation ||  ''
+                                    placeholder="e.g. Node.js Developer"
+                                )
+
+                        hr.my-4
+
+                        h6.fw-semibold.text-muted.text-uppercase.mb-3 System Access
+
+                        .mb-3
+                            label.form-label.fw-semibold(for='role') Role *
+                            select#role.form-select(name="role" required)
+                                option(value="" disabled selected=(!formData.role)) - Select a role -
+                                option(value="employee" selected=(formData.role === 'employee')) Employee
+                                option(value="asset_master" selected=(formData.role === 'asset_master')) Asset Master
+                                option(value="employee_master"  selected=(formData.role === 'employee_master')) Employee Master
+
+                            .form-text 
+                                i.bi.bi-info-circle.me-1
+                                | The System Will Auto-Generate A User ID And Pssword.  You'll See Them On The Next Screen.
+
+                        .d-flex.gap-2.mt-4
+                            button.btn.btn-primary(type="submit")
+                                i.bi.bi-person-check.me-2
+                                | Create Employee
+                            a.btn.btn-outline-secondary(href="/employees") Cancel
