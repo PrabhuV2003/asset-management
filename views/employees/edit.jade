@@ -6,9 +6,9 @@ block content
             i.bi.bi-arrow-left
         div
             h1.h3.fw-bold
-                i.bi.bi-person-plus.me-2.text-primary
-                | Add Employee
-            p.text-muted.mb-0 Create a new employee profile and system login
+                i.bi.bi-pencil-square.me-2.text-primary
+                | Edit Employee
+            p.text-muted.mb-0= employee.fullName
 
     .row
         .col-lg-8
@@ -21,7 +21,7 @@ block content
                                 each err in errors
                                     li= err
 
-                    form(action="/employees" method="POST" novalidate)
+                    form(action='/employees/' + employee.id + '/edit' method="POST" novalidate)
 
                         h6.fw-semibold.text-muted.text-uppercase.mb-3 Profile Information
 
@@ -31,8 +31,7 @@ block content
                                 input#fullName.form-control(
                                     type="text"
                                     name="fullName"
-                                    value=formData.fullName || ''
-                                    placeholder="e.g. John Smith"
+                                    value=employee.fullName
                                     required
                                 )
 
@@ -41,8 +40,7 @@ block content
                                 input#email.form-control(
                                     type="email"
                                     name="email"
-                                    value=formData.email || ''
-                                    placeholder="john@company.com"
+                                    value=employee.email
                                     required
                                 )
 
@@ -51,8 +49,7 @@ block content
                                 input#phone.form-control(
                                     type="tel"
                                     name="phone"
-                                    value=formData.phone || ''
-                                    placeholder="+91 9876543210"
+                                    value=employee.phone || ''
                                 )
 
                             .col-md-6
@@ -60,7 +57,7 @@ block content
                                 input#joinDate.form-control(
                                     type="date"
                                     name="joinDate"
-                                    value=formData.joinDate || ''
+                                    value=employee.joinDate || ''
                                 )
 
                             .col-md-6
@@ -68,8 +65,7 @@ block content
                                 input#department.form-control(
                                     type="text"
                                     name="department"
-                                    value=formData.department || ''
-                                    placeholder="e.g. Engineering"
+                                    value=employee.department || ''
                                 )
 
                             .col-md-6
@@ -77,8 +73,7 @@ block content
                                 input#branch.form-control(
                                     type="text"
                                     name="branch"
-                                    value=formData.branch || ''
-                                    placeholder="e.g. Head Office"
+                                    value=employee.branch || ''
                                 )
 
                             .col-12
@@ -86,28 +81,34 @@ block content
                                 input#designation.form-control(
                                     type="text"
                                     name="designation"
-                                    value=formData.designation || ''
-                                    placeholder="e.g. Software Engineer"
+                                    value=employee.designation || ''
                                 )
 
                         hr.my-4
 
-                        h6.fw-semibold.text-muted.text-uppercase.mb-3 System Access
+                        h6.fw-semibold.text-muted.text-uppercase.mb-3 System Access (Read-Only)
 
-                        .mb-3
-                            label.form-label.fw-semibold(for="role") Role *
-                            select#role.form-select(name="role" required)
-                                option(value="" disabled selected=(!formData.role)) — Select a role —
-                                option(value="employee" selected=(formData.role === 'employee')) Employee
-                                option(value="asset_master" selected=(formData.role === 'asset_master')) Asset Master
-                                option(value="employee_master" selected=(formData.role === 'employee_master')) Employee Master
+                        .row.g-3
+                            .col-md-6
+                                label.form-label.fw-semibold User ID
+                                input.form-control.bg-light(
+                                    type="text"
+                                    value=employee.account ? employee.account.userId : 'No account'
+                                    readonly
+                                )
+                                .form-text User IDs cannot be changed after creation.
 
-                            .form-text
-                                i.bi.bi-info-circle.me-1
-                                | The system will auto-generate a User ID and password. You'll see them on the next screen.
+                            .col-md-6
+                                label.form-label.fw-semibold Role
+                                input.form-control.bg-light(
+                                    type="text"
+                                    value=employee.account ? employee.account.role.replace(/_/g, ' ') : '—'
+                                    readonly
+                                )
+                                .form-text To change a role, contact the system administrator.
 
                         .d-flex.gap-2.mt-4
                             button.btn.btn-primary(type="submit")
-                                i.bi.bi-person-check.me-2
-                                | Create Employee
+                                i.bi.bi-save.me-2
+                                | Save Changes
                             a.btn.btn-outline-secondary(href="/employees") Cancel

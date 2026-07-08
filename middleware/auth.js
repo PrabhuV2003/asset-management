@@ -15,7 +15,7 @@ const isLoggedIn = (req, res, next) => {
 
 const requireRole = (allowedRoles) => {
     return (req, res, next) => {
-        if(!res.session || !req.session.userId) {
+        if(!req.session || !req.session.userId) {
             req.flash('error', 'Please log in to access  this page.');
             return res.redirect('/login')
         }

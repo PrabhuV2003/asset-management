@@ -51,9 +51,11 @@ app.use((req, res, next) => {
 // ----- Routes -----
 const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard')
+const employeeRoutes  = require('./routes/employees');
 
 app.use('/', authRoutes);
 app.use('/dashboard', dashboardRoutes);
+app.use('/employees', employeeRoutes);
 
 // ----- 404 Handler -----
 app.use((req, res) => {

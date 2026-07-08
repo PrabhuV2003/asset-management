@@ -32,7 +32,7 @@ const generateUserId = async(role, User) => {
     if(latest) {
         // Extract the trailling number: "EMP-2026-007" -> 7
         const parts = latest.userId.split('-');
-        const  lastSeq = arseInt(parts[parts.length - 1], 10);
+        const lastSeq = parseInt(parts[parts.length - 1], 10);
         if(!isNaN(lastSeq)) {
             sequence = lastSeq + 1;
         }

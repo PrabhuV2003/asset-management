@@ -20,7 +20,7 @@ router.get('/', isLoggedIn, requireRole(VIEWERS), async(req, res) => {
                 {
                     model: User,
                     as: 'account',
-                    attributes: ['userId', 'role', 'isActive', 'lastLoginAt']
+                    attributes: ['userId', 'role', 'isActive', 'LastLoginAt']
                 }
             ],
             order: [['createdAt', 'DESC']]
@@ -42,8 +42,8 @@ router.get('/', isLoggedIn, requireRole(VIEWERS), async(req, res) => {
 router.get('/new', isLoggedIn, requireRole(MANAGERS), (req, res) => {
     res.render('employees/create', {
         title: 'Add Employee - Asset Management',
-        FormData: {},
-        error: []
+        formData: {},
+        errors: []
     });
 });
 
@@ -63,14 +63,14 @@ router.post('/', isLoggedIn, requireRole(MANAGERS), async(req, res) => {
     }
 
     if(!role || !['employee_master', 'asset_master', 'employee'].includes(role)) {
-        errors.push('A valid role must be selected.');
+        error.push('A valid role must be selected.');
     }
 
     if(error.length > 0) {
         return res.render('employees/create', {
             title: 'Add Employee - Asset Management',
             formData: req.body,
-            errors: errors
+            errors: error
         })
     }
 
@@ -123,7 +123,7 @@ router.post('/', isLoggedIn, requireRole(MANAGERS), async(req, res) => {
     return res.redirect('/employees/credentials')
     } catch (error) {
         console.error('Create employee error:', error);
-        return res.render('emloyees/create', {
+        return res.render('employees/create', {
             title: 'Add  Employee - Asset Management',
             formData: req.body,
             error: ['An Unexpected Error Occurred. Please Try Again.']
@@ -162,7 +162,7 @@ router.get('/:id/edit', isLoggedIn, requireRole(MANAGERS), async(req, res) => {
             return res.redirect('/employees')
         }
 
-        res.render('emplpyees/edit', {
+        res.render('employees/edit', {
             title:  `Edit ${employee.fullName} - Asset Management`,
             employee: employee,
             errors: []

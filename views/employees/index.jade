@@ -1,7 +1,7 @@
 extends ../layout
 
 block content
-    .d-flex.align-item-center.justify-content-between.mb-4
+    .d-flex.align-items-center.justify-content-between.mb-4
         div
             h1.h3.fw-bold
                 i.bi.bi-people.me-2.text-primary
@@ -11,10 +11,10 @@ block content
             a.btn.btn-primary(href="/employees/new")
                 i.bi.bi-person-plus.me-2
                 | Add Employee
-    
+
     .card.border-0.shadow-sm
         .card-body.p-0
-            //- Filter Tabs
+
             ul.nav.nav-tabs.px-4.pt-3(id="employeeTab" role="tablist")
                 li.nav-item(role="presentation")
                     button.nav-link.active(
@@ -23,8 +23,8 @@ block content
                         data-bs-target="#all"
                         type="button"
                         role="tab"
-                    ) All (#{employees}.length)
-                li-nav-item(role="presentation")
+                    ) All (#{employees.length})
+                li.nav-item(role="presentation")
                     button.nav-link(
                         id="active-tab"
                         data-bs-toggle="tab"
@@ -44,56 +44,60 @@ block content
                     )
                         span.badge.bg-secondary.me-1 ●
                         | Inactive
-            
+
             .tab-content.p-4(id="employeeTabContent")
 
-                //- ----- ALL TAB -----
+                //- ALL TAB
                 .tab-pane.fade.show.active(id="all" role="tabpanel")
                     table#tableAll.table.table-hover.w-100
-                        thed.table-light 
+                        thead.table-light
                             tr
                                 th #
                                 th Full Name
-                                th Email 
-                                th Deparment 
-                                th Branch 
+                                th Email
+                                th Department
+                                th Branch
                                 th User ID
                                 th Role
                                 th Status
                                 if role === 'employee_master'
                                     th Actions
-                        tbody 
+                        tbody
                             each emp, i in employees
                                 tr
                                     td= i + 1
                                     td= emp.fullName
-                                    td= emp.email 
-                                    td= emp.department || '_'
-                                    td= emp.branch || '_'
+                                    td= emp.email
+                                    td= emp.department || '—'
+                                    td= emp.branch || '—'
                                     td
                                         if emp.account
-                                            code= emp.account.userId 
+                                            code= emp.account.userId
                                         else
-                                            span.text-muted -
+                                            span.text-muted —
                                     td
-                                        if emp.account 
-                                            span.badge.bg-info.text-dark= emp.account.role.replace(/_/g, '')
+                                        if emp.account
+                                            span.badge.bg-info.text-dark= emp.account.role.replace(/_/g, ' ')
                                         else
-                                            span.text-muted -
+                                            span.text-muted —
                                     td
                                         if emp.isActive
                                             span.badge.bg-success Active
                                         else
-                                            span.badge.bg-secoundary Inactive 
+                                            span.badge.bg-secondary Inactive
                                     if role === 'employee_master'
                                         td
-                                            a.btn.btn-sm.btn-outline-primary.me-1(href=`/employees/${emp.id}/edit`)
+                                            a.btn.btn-sm.btn-outline-primary.me-1(href='/employees/' + emp.id + '/edit' title="Edit")
                                                 i.bi.bi-pencil
-                                            form(action=`/employees/${emp.id}/toggle` method="POST" style="display:inline")
-                                            button.btn.btn-sm.btn-outline-danger(type="submit" onclick="retrun confirm('Deactivate This Employee?')")
-                                                i.bi.bi-person-x
+                                            form(action='/employees/' + emp.id + '/toggle' method="POST" style="display:inline")
+                                                if emp.isActive
+                                                    button.btn.btn-sm.btn-outline-danger(type="submit" onclick="return confirm('Deactivate this employee?')")
+                                                        i.bi.bi-person-x
+                                                else
+                                                    button.btn.btn-sm.btn-outline-success(type="submit" onclick="return confirm('Activate this employee?')")
+                                                        i.bi.bi-person-check
 
-                //- ----- ACTIVE TAB -----
+                //- ACTIVE TAB
                 .tab-pane.fade(id="active" role="tabpanel")
                     table#tableActive.table.table-hover.w-100
                         thead.table-light
@@ -107,32 +111,34 @@ block content
                                 th Role
                                 if role === 'employee_master'
                                     th Actions
-                            tbody 
-                                each emp, i in employees.filter(e => e.isActive)
-                                    tr
-                                        td= i + 1
-                                        td= emp.fullName
-                                        td= emp.email 
-                                        td= emp.department || '_'
-                                        td= emp.branch || '_'
+                        tbody
+                            each emp, i in employees.filter(function(e) { return e.isActive; })
+                                tr
+                                    td= i + 1
+                                    td= emp.fullName
+                                    td= emp.email
+                                    td= emp.department || '—'
+                                    td= emp.branch || '—'
+                                    td
+                                        if emp.account
+                                            code= emp.account.userId
+                                        else
+                                            span.text-muted —
+                                    td
+                                        if emp.account
+                                            span.badge.bg-info.text-dark= emp.account.role.replace(/_/g, ' ')
+                                        else
+                                            span.text-muted —
+                                    if role === 'employee_master'
                                         td
-                                            if emp.account
-                                                code= emp.account.userId
-                                            else
-                                                span.text-muted -
-                                        td
-                                            if emp.account 
-                                                span.badge.bg-info.text-dark= emp.account.role.replace(/_/g, ' ')
-                                                if role === 'employee_master'
-                                                    td
-                                                        a.btn.btn-sm.btn-outline-primary.me-1(hred=`/employess/${emp.id}/edit`)
-                                                            i.bi.bi-pencil
-                                                        form(action=`/employees/${emp.id}/toggle` method='POST' style='display:inline')
-                                                            button.btn.btn-sm.btn-outline-danger(type="submit" onclick="return confirm('Deactivate this employees?')")
-                                                                i.bi.bi-person-x
+                                            a.btn.btn-sm.btn-outline-primary.me-1(href='/employees/' + emp.id + '/edit')
+                                                i.bi.bi-pencil
+                                            form(action='/employees/' + emp.id + '/toggle' method="POST" style="display:inline")
+                                                button.btn.btn-sm.btn-outline-danger(type="submit" onclick="return confirm('Deactivate this employee?')")
+                                                    i.bi.bi-person-x
 
-                //- ----- INACTIVE TAB -----
-                .tab-pane.fade(id='inactive' rol='tabpanel')
+                //- INACTIVE TAB
+                .tab-pane.fade(id="inactive" role="tabpanel")
                     table#tableInactive.table.table-hover.w-100
                         thead.table-light
                             tr
@@ -145,50 +151,51 @@ block content
                                 th Role
                                 if role === 'employee_master'
                                     th Actions
-                            thbody
-                                each emp, i in employees.filter(e => !e.isActive)
-                                    tr
-                                        td= i + 1
-                                        td= emp.fullName
-                                        td= emp.email
-                                        td= emp.department || '_'
-                                        td= emp.branch || '_'
+                        tbody
+                            each emp, i in employees.filter(function(e) { return !e.isActive; })
+                                tr
+                                    td= i + 1
+                                    td= emp.fullName
+                                    td= emp.email
+                                    td= emp.department || '—'
+                                    td= emp.branch || '—'
+                                    td
+                                        if emp.account
+                                            code= emp.account.userId
+                                        else
+                                            span.text-muted —
+                                    td
+                                        if emp.account
+                                            span.badge.bg-info.text-dark= emp.account.role.replace(/_/g, ' ')
+                                        else
+                                            span.text-muted —
+                                    if role === 'employee_master'
                                         td
-                                            if emp.account
-                                                code= emp.account.userId
-                                            else
-                                                span.text-muted -
-                                        td
-                                            if emp.account
-                                                span.badge.bg-info.text-dark= emp.account.role.replace(/_/g, ' ')
-                                            if role === 'emplpyee_master'
-                                                td
-                                                    a.btn.btn-sm.btn-outline-primary.me-1(href=`/employees/${emp.id}/edit`)
-                                                        i.bi.bi-pencil
-                                                    form(action=`/employees/${emp.id}/toggle` method='POST' style='display:inline')
-                                                        button.btn.btn-sm.btn-outline-success(type='submit' onclick="return confirm('Activate this employee?')")
-                                                            i.bi-bi-person-check
+                                            a.btn.btn-sm.btn-outline-primary.me-1(href='/employees/' + emp.id + '/edit')
+                                                i.bi.bi-pencil
+                                            form(action='/employees/' + emp.id + '/toggle' method="POST" style="display:inline")
+                                                button.btn.btn-sm.btn-outline-success(type="submit" onclick="return confirm('Activate this employee?')")
+                                                    i.bi.bi-person-check
 
 block scripts
-    //- DataTables CSS + JS (loaded only on this page)
-    link(rel="stylesheet", href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css")
+    link(rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css")
     script(src="https://code.jquery.com/jquery-3.7.1.min.js")
     script(src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js")
     script(src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js")
     script.
         $(document).ready(function () {
-            const dtOptions = {
+            var dtOptions = {
                 pageLength: 10,
                 lengthMenu: [10, 25, 50],
                 language: {
-                    emptyTable: 'No Employees Found.',
+                    emptyTable: 'No employees found.',
                     search: 'Search:'
                 },
-                columnsDefs: [
+                columnDefs: [
                     { orderable: false, targets: -1 }
                 ]
             };
             $('#tableAll').DataTable(dtOptions);
-            $('#tableActive').DataTable(dtOptions)
+            $('#tableActive').DataTable(dtOptions);
             $('#tableInactive').DataTable(dtOptions);
         });
