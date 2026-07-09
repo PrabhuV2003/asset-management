@@ -77,11 +77,22 @@ block content
                                 else
                                     span.badge.bg-danger Scrapped
                             td
-                                if asset.status !== 'scrapped'
-                                    a.btn.btn-sm.btn-outline-primary(href='/assets/' + asset.id + '/edit')
+                                if asset.status === 'in_stock'
+                                    a.btn.btn-sm.btn-outline-primary.me-1(href='/assets/' + asset.id + '/edit' title="Edit")
                                         i.bi.bi-pencil
+                                    if role === 'employee_master' || role === 'asset_master'
+                                        a.btn.btn-sm.btn-outline-success.me-1(href='/issues/issue/' + asset.id title="Issue to Employee")
+                                            i.bi.bi-box-arrow-right
+                                        a.btn.btn-sm.btn-outline-danger(href='/issues/scrap/' + asset.id title="Scrap")
+                                            i.bi.bi-trash3
+                                else if asset.status === 'issued'
+                                    if role === 'employee_master' || role === 'asset_master'
+                                        a.btn.btn-sm.btn-outline-warning.me-1(href='/issues/return/' + asset.activeIssueId title="Return to Stock")
+                                            i.bi.bi-box-arrow-in-left
+                                        a.btn.btn-sm.btn-outline-danger(href='/issues/scrap/' + asset.id title="Scrap")
+                                            i.bi.bi-trash3
                                 else
-                                    span.text-muted.small —
+                                    span.text-muted.small Scrapped
 
 block scripts
     link(rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css")

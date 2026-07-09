@@ -1,0 +1,58 @@
+extends ../layout
+
+block content
+    .d-flex.align-items-center.justify-content-between.mb-4
+        div
+            h1.h3.fw-bold
+                i.bi.bi-clock-history.me-2.text-primary
+                | Issue History
+            p.text-muted.mb-0 Complete audit trail of all asset movements
+        a.btn.btn-outline-secondary(href="/assets")
+            i.bi.bi-arrow-left.me-2
+            | Back to Assets
+
+    .card.border-0.shadow-sm
+        .card-body.p-0
+            table#tableHistory.table.table-hover.w-100.mb-0
+                thead.table-light
+                    tr
+                        th Asset ID
+                        th Asset Name
+                        th Issued To
+                        th Department
+                        th Issued By
+                        th Issued On
+                        th Returned On
+                        th Status
+                tbody
+                    each issue in issues
+                        tr
+                            td
+                                code= issue.asset ? issue.asset.assetId : '—'
+                            td= issue.asset ? issue.asset.name : '—'
+                            td= issue.issuedTo ? issue.issuedTo.fullName : '—'
+                            td= issue.issuedTo ? issue.issuedTo.department || '—' : '—'
+                            td= issue.issuedBy ? issue.issuedBy.fullName : '—'
+                            td= issue.issuedAt ? new Date(issue.issuedAt).toLocaleDateString('en-IN') : '—'
+                            td= issue.returnedAt ? new Date(issue.returnedAt).toLocaleDateString('en-IN') : '—'
+                            td
+                                if issue.status === 'active'
+                                    span.badge.bg-warning.text-dark Active
+                                else if issue.status === 'returned'
+                                    span.badge.bg-success Returned
+                                else
+                                    span.badge.bg-danger Scrapped
+
+block scripts
+    link(rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css")
+    script(src="https://code.jquery.com/jquery-3.7.1.min.js")
+    script(src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js")
+    script(src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js")
+    script.
+        $(document).ready(function () {
+            $('#tableHistory').DataTable({
+                pageLength: 20,
+                order: [[5, 'desc']],
+                language: { emptyTable: 'No issue records found.' }
+            });
+        });

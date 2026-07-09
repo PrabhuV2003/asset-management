@@ -1,0 +1,66 @@
+extends ../layout
+
+block content
+    .d-flex.align-items-center.mb-4
+        a.btn.btn-outline-secondary.me-3(href="/assets")
+            i.bi.bi-arrow-left
+        div
+            h1.h3.fw-bold
+                i.bi.bi-box-arrow-in-left.me-2.text-success
+                | Return Asset
+            p.text-muted.mb-0 Return this asset back to stock
+
+    .row
+        .col-lg-8
+            .card.border-0.shadow-sm.mb-4
+                .card-header.bg-light
+                    h6.fw-bold.mb-0
+                        i.bi.bi-laptop.me-2
+                        | Asset Details
+                .card-body
+                    .row.g-3
+                        .col-md-6
+                            label.form-label.small.text-muted Asset ID
+                            p.fw-semibold.mb-0
+                                code= issue.asset.assetId
+                        .col-md-6
+                            label.form-label.small.text-muted Name
+                            p.fw-semibold.mb-0= issue.asset.name
+                        .col-md-6
+                            label.form-label.small.text-muted Currently Issued To
+                            p.fw-semibold.mb-0= issue.issuedTo ? issue.issuedTo.fullName : '—'
+                        .col-md-6
+                            label.form-label.small.text-muted Department
+                            p.fw-semibold.mb-0= issue.issuedTo ? issue.issuedTo.department || '—' : '—'
+                        .col-md-6
+                            label.form-label.small.text-muted Issued On
+                            p.fw-semibold.mb-0= issue.issuedAt ? new Date(issue.issuedAt).toLocaleDateString('en-IN') : '—'
+
+            .card.border-0.shadow-sm
+                .card-header.bg-light
+                    h6.fw-bold.mb-0
+                        i.bi.bi-clipboard-check.me-2
+                        | Return Details
+                .card-body.p-4
+
+                    form(action='/issues/return/' + issue.id method="POST" novalidate)
+
+                        .mb-4
+                            label.form-label.fw-semibold(for="returnNotes") Return Notes
+                            textarea#returnNotes.form-control(
+                                name="returnNotes"
+                                rows="3"
+                                placeholder="Condition of the asset, reason for return, any damage, etc."
+                            )
+
+                        .alert.alert-info
+                            i.bi.bi-info-circle.me-2
+                            | This action will change the asset status back to
+                            strong  In Stock
+                            |  and make it available for re-issue.
+
+                        .d-flex.gap-2
+                            button.btn.btn-success(type="submit")
+                                i.bi.bi-box-arrow-in-left.me-2
+                                | Confirm Return
+                            a.btn.btn-outline-secondary(href="/assets") Cancel

@@ -1,0 +1,73 @@
+extends ../layout
+
+block content
+    .d-flex.align-items-center.mb-4
+        a.btn.btn-outline-secondary.me-3(href="/assets")
+            i.bi.bi-arrow-left
+        div
+            h1.h3.fw-bold
+                i.bi.bi-trash3.me-2.text-danger
+                | Scrap Asset
+            p.text-muted.mb-0 Permanently retire this asset from inventory
+
+    .row
+        .col-lg-7
+            .card.border-0.shadow-sm.mb-4
+                .card-header.bg-light
+                    h6.fw-bold.mb-0
+                        i.bi.bi-laptop.me-2
+                        | Asset to Scrap
+                .card-body
+                    .row.g-3
+                        .col-md-6
+                            label.form-label.small.text-muted Asset ID
+                            p.fw-semibold.mb-0
+                                code= asset.assetId
+                        .col-md-6
+                            label.form-label.small.text-muted Name
+                            p.fw-semibold.mb-0= asset.name
+                        .col-md-6
+                            label.form-label.small.text-muted Current Status
+                            p.mb-0
+                                if asset.status === 'in_stock'
+                                    span.badge.bg-success In Stock
+                                else if asset.status === 'issued'
+                                    span.badge.bg-warning.text-dark Issued
+                        .col-md-6
+                            label.form-label.small.text-muted Currently With
+                            p.fw-semibold.mb-0= asset.assignedTo ? asset.assignedTo.fullName : '—'
+
+            .card.border-danger.shadow-sm(style="border-width: 2px !important")
+                .card-header.bg-danger.text-white
+                    h6.fw-bold.mb-0
+                        i.bi.bi-exclamation-octagon.me-2
+                        | This Action Cannot Be Undone
+                .card-body.p-4
+
+                    .alert.alert-danger
+                        ul.mb-0
+                            li The asset status will change to
+                                strong  Scrapped
+                                |  permanently
+                            li It will be removed from stock views and issue workflows
+                            li If currently issued, the open issue record will be automatically closed
+
+                    form(action='/issues/scrap/' + asset.id method="POST" novalidate)
+
+                        .mb-4
+                            label.form-label.fw-semibold(for="scrapReason") Reason for Scrapping *
+                            textarea#scrapReason.form-control(
+                                name="scrapReason"
+                                rows="3"
+                                placeholder="e.g. Beyond economic repair, lost, stolen, end of life"
+                                required
+                            )
+
+                        .d-flex.gap-2
+                            button.btn.btn-danger(
+                                type="submit"
+                                onclick="return confirm('Are you sure you want to scrap this asset? This cannot be undone.')"
+                            )
+                                i.bi.bi-trash3.me-2
+                                | Confirm Scrap
+                            a.btn.btn-outline-secondary(href="/assets") Cancel

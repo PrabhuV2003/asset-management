@@ -1,0 +1,60 @@
+extends ../layout
+
+block content
+    .d-flex.align-items-center.justify-content-between.mb-4
+        div
+            h1.h3.fw-bold
+                i.bi.bi-person-check.me-2.text-primary
+                | My Assets
+            p.text-muted.mb-0 Assets currently assigned to you
+
+    if myAssets.length === 0
+        .card.border-0.shadow-sm
+            .card-body.text-center.py-5
+                i.bi.bi-inbox.text-muted(style="font-size:3rem")
+                h4.mt-3.text-muted No assets assigned to you
+                p.text-muted Assets issued to you will appear here.
+
+    else
+        .card.border-0.shadow-sm
+            .card-body.p-0
+                table#tableMyAssets.table.table-hover.w-100.mb-0
+                    thead.table-light
+                        tr
+                            th Asset ID
+                            th Name
+                            th Category
+                            th Make / Model
+                            th Serial No.
+                            th Issued On
+                    tbody
+                        each asset in myAssets
+                            tr
+                                td
+                                    code= asset.assetId
+                                td= asset.name
+                                td= asset.category ? asset.category.name : '—'
+                                td
+                                    if asset.make || asset.model
+                                        | #{asset.make || ''} #{asset.model || ''}
+                                    else
+                                        span.text-muted —
+                                td= asset.serialNumber || '—'
+                                td
+                                    if issueMap[asset.id]
+                                        = new Date(issueMap[asset.id].issuedAt).toLocaleDateString('en-IN')
+                                    else
+                                        span.text-muted —
+
+block scripts
+    link(rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css")
+    script(src="https://code.jquery.com/jquery-3.7.1.min.js")
+    script(src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js")
+    script(src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js")
+    script.
+        $(document).ready(function () {
+            $('#tableMyAssets').DataTable({
+                pageLength: 15,
+                language: { emptyTable: 'No assets assigned.' }
+            });
+        });
