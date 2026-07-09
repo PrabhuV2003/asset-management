@@ -1,0 +1,128 @@
+extends ../layout
+
+block content
+    .d-flex.align-items-center.mb-4
+        a.btn.btn-outline-secondary.me-3(href="/assets")
+            i.bi.bi-arrow-left
+        div
+            h1.h3.fw-bold
+                i.bi.bi-pencil-square.me-2.text-primary
+                | Edit Asset
+            p.text-muted.mb-0= asset.assetId + ' — ' + asset.name
+
+    .row
+        .col-lg-9
+            .card.border-0.shadow-sm
+                .card-body.p-4
+
+                    if errors && errors.length
+                        .alert.alert-danger
+                            ul.mb-0
+                                each err in errors
+                                    li= err
+
+                    form(action='/assets/' + asset.id + '/edit' method="POST" novalidate)
+
+                        //- Read-only Asset ID
+                        .mb-3
+                            label.form-label.fw-semibold Asset ID
+                            input.form-control.bg-light(
+                                type="text"
+                                value=asset.assetId
+                                readonly
+                            )
+                            .form-text Asset IDs cannot be changed after creation.
+
+                        h6.fw-semibold.text-muted.text-uppercase.mb-3 Asset Information
+
+                        .row.g-3
+                            .col-md-8
+                                label.form-label.fw-semibold(for="name") Asset Name *
+                                input#name.form-control(
+                                    type="text"
+                                    name="name"
+                                    value=asset.name
+                                    required
+                                )
+
+                            .col-md-4
+                                label.form-label.fw-semibold(for="categoryId") Category *
+                                select#categoryId.form-select(name="categoryId" required)
+                                    each cat in categories
+                                        option(value=cat.id selected=(asset.categoryId == cat.id)) #{cat.name}
+
+                            .col-md-6
+                                label.form-label.fw-semibold(for="make") Make
+                                input#make.form-control(
+                                    type="text"
+                                    name="make"
+                                    value=asset.make || ''
+                                )
+
+                            .col-md-6
+                                label.form-label.fw-semibold(for="model") Model
+                                input#model.form-control(
+                                    type="text"
+                                    name="model"
+                                    value=asset.model || ''
+                                )
+
+                            .col-md-6
+                                label.form-label.fw-semibold(for="serialNumber") Serial Number
+                                input#serialNumber.form-control(
+                                    type="text"
+                                    name="serialNumber"
+                                    value=asset.serialNumber || ''
+                                )
+
+                            .col-md-6
+                                label.form-label.fw-semibold(for="branch") Branch / Location
+                                input#branch.form-control(
+                                    type="text"
+                                    name="branch"
+                                    value=asset.branch || ''
+                                )
+
+                        hr.my-4
+
+                        h6.fw-semibold.text-muted.text-uppercase.mb-3 Purchase Details
+
+                        .row.g-3
+                            .col-md-4
+                                label.form-label.fw-semibold(for="purchaseDate") Purchase Date
+                                input#purchaseDate.form-control(
+                                    type="date"
+                                    name="purchaseDate"
+                                    value=asset.purchaseDate || ''
+                                )
+
+                            .col-md-4
+                                label.form-label.fw-semibold(for="purchasePrice") Purchase Price (₹)
+                                input#purchasePrice.form-control(
+                                    type="number"
+                                    name="purchasePrice"
+                                    value=asset.purchasePrice || ''
+                                    min="0"
+                                    step="0.01"
+                                )
+
+                            .col-md-4
+                                label.form-label.fw-semibold(for="warrantyExpiry") Warranty Expiry
+                                input#warrantyExpiry.form-control(
+                                    type="date"
+                                    name="warrantyExpiry"
+                                    value=asset.warrantyExpiry || ''
+                                )
+
+                            .col-12
+                                label.form-label.fw-semibold(for="notes") Notes
+                                textarea#notes.form-control(
+                                    name="notes"
+                                    rows="3"
+                                )= asset.notes || ''
+
+                        .d-flex.gap-2.mt-4
+                            button.btn.btn-primary(type="submit")
+                                i.bi.bi-save.me-2
+                                | Save Changes
+                            a.btn.btn-outline-secondary(href="/assets") Cancel

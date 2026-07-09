@@ -1,0 +1,72 @@
+extends ../layout
+
+block content
+    .d-flex.align-items-center.justify-content-between.mb-4
+        div
+            h1.h3.fw-bold
+                i.bi.bi-boxes.me-2.text-primary
+                | Stock View
+            p.text-muted.mb-0
+                | #{totalCount} asset(s) currently in stock across #{branches.length} branch(es)
+        a.btn.btn-outline-secondary(href="/assets")
+            i.bi.bi-arrow-left.me-2
+            | Back to Assets
+
+    if branches.length === 0
+        .card.border-0.shadow-sm
+            .card-body.text-center.py-5
+                i.bi.bi-box-seam.text-muted(style="font-size:3rem")
+                h4.mt-3.text-muted No assets currently in stock
+                p.text-muted Add assets or return issued ones to see them here.
+                a.btn.btn-primary(href="/assets/new")
+                    i.bi.bi-plus-circle.me-2
+                    | Add Asset
+
+    each branch in branches
+        .card.border-0.shadow-sm.mb-4
+            .card-header.bg-white.d-flex.justify-content-between.align-items-center.py-3
+                h6.fw-bold.mb-0
+                    i.bi.bi-geo-alt.me-2.text-primary
+                    = branch
+                .d-flex.gap-3
+                    span.badge.bg-primary.fs-6= grouped[branch].count + ' assets'
+                    span.badge.bg-success.fs-6 ₹ #{grouped[branch].value.toLocaleString('en-IN', {minimumFractionDigits: 2})}
+            .card-body.p-0
+                table.table.table-hover.mb-0
+                    thead.table-light
+                        tr
+                            th Asset ID
+                            th Name
+                            th Category
+                            th Make / Model
+                            th Serial No.
+                            th Purchase Date
+                            th Value (₹)
+                    tbody
+                        each asset in grouped[branch].assets
+                            tr
+                                td
+                                    code= asset.assetId
+                                td= asset.name
+                                td= asset.category ? asset.category.name : '—'
+                                td
+                                    if asset.make || asset.model
+                                        | #{asset.make || ''} #{asset.model || ''}
+                                    else
+                                        span.text-muted —
+                                td= asset.serialNumber || '—'
+                                td= asset.purchaseDate || '—'
+                                td= asset.purchasePrice ? Number(asset.purchasePrice).toLocaleString('en-IN', {minimumFractionDigits: 2}) : '—'
+
+    //- Grand Total Footer
+    if branches.length > 0
+        .card.border-0.shadow-sm.border-top.border-primary(style="border-top-width: 3px !important")
+            .card-body.d-flex.justify-content-between.align-items-center
+                span.fw-bold.text-primary GRAND TOTAL — ALL BRANCHES
+                .d-flex.gap-4
+                    div.text-center
+                        div.small.text-muted Total Assets
+                        div.fw-bold.fs-5= totalCount
+                    div.text-center
+                        div.small.text-muted Total Value
+                        div.fw-bold.fs-5.text-success ₹ #{grandTotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}

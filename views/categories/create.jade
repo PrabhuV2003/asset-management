@@ -1,0 +1,48 @@
+extends ../layout
+
+block content
+    .d-flex.align-items-center.mb-4
+        a.btn.btn-outline-secondary.me-3(href="/categories")
+            i.bi.bi-arrow-left
+        div
+            h1.h3.fw-bold
+                i.bi.bi-plus-circle.me-2.text-primary
+                | Add Category
+            p.text-muted.mb-0 Create a new asset hardware type
+
+    .row
+        .col-lg-6
+            .card.border-0.shadow-sm
+                .card-body.p-4
+
+                    if errors && errors.length
+                        .alert.alert-danger
+                            ul.mb-0
+                                each err in errors
+                                    li= err
+
+                    form(action="/categories" method="POST" novalidate)
+
+                        .mb-3
+                            label.form-label.fw-semibold(for="name") Category Name *
+                            input#name.form-control(
+                                type="text"
+                                name="name"
+                                value=formData.name || ''
+                                placeholder="e.g. Laptop, Mobile Phone, Drill Machine"
+                                required
+                            )
+
+                        .mb-4
+                            label.form-label.fw-semibold(for="description") Description
+                            textarea#description.form-control(
+                                name="description"
+                                rows="3"
+                                placeholder="Optional description of this category"
+                            )= formData.description || ''
+
+                        .d-flex.gap-2
+                            button.btn.btn-primary(type="submit")
+                                i.bi.bi-check-circle.me-2
+                                | Create Category
+                            a.btn.btn-outline-secondary(href="/categories") Cancel

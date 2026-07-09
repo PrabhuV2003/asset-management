@@ -1,0 +1,46 @@
+extends ../layout
+
+block content
+    .d-flex.align-items-center.mb-4
+        a.btn.btn-outline-secondary.me-3(href="/categories")
+            i.bi.bi-arrow-left
+        div
+            h1.h3.fw-bold
+                i.bi.bi-pencil-square.me-2.text-primary
+                | Edit Category
+            p.text-muted.mb-0= category.name
+
+    .row
+        .col-lg-6
+            .card.border-0.shadow-sm
+                .card-body.p-4
+
+                    if errors && errors.length
+                        .alert.alert-danger
+                            ul.mb-0
+                                each err in errors
+                                    li= err
+
+                    form(action='/categories/' + category.id + '/edit' method="POST" novalidate)
+
+                        .mb-3
+                            label.form-label.fw-semibold(for="name") Category Name *
+                            input#name.form-control(
+                                type="text"
+                                name="name"
+                                value=category.name
+                                required
+                            )
+
+                        .mb-4
+                            label.form-label.fw-semibold(for="description") Description
+                            textarea#description.form-control(
+                                name="description"
+                                rows="3"
+                            )= category.description || ''
+
+                        .d-flex.gap-2
+                            button.btn.btn-primary(type="submit")
+                                i.bi.bi-save.me-2
+                                | Save Changes
+                            a.btn.btn-outline-secondary(href="/categories") Cancel

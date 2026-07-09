@@ -1,0 +1,130 @@
+extends ../layout
+
+block content
+    .d-flex.align-items-center.mb-4
+        a.btn.btn-outline-secondary.me-3(href="/assets")
+            i.bi.bi-arrow-left
+        div
+            h1.h3.fw-bold
+                i.bi.bi-plus-circle.me-2.text-primary
+                | Add Asset
+            p.text-muted.mb-0 Register a new physical asset
+
+    .row
+        .col-lg-9
+            .card.border-0.shadow-sm
+                .card-body.p-4
+
+                    if errors && errors.length
+                        .alert.alert-danger
+                            ul.mb-0
+                                each err in errors
+                                    li= err
+
+                    form(action="/assets" method="POST" novalidate)
+
+                        h6.fw-semibold.text-muted.text-uppercase.mb-3 Asset Information
+
+                        .row.g-3
+                            .col-md-8
+                                label.form-label.fw-semibold(for="name") Asset Name *
+                                input#name.form-control(
+                                    type="text"
+                                    name="name"
+                                    value=formData.name || ''
+                                    placeholder="e.g. Dell Inspiron Laptop"
+                                    required
+                                )
+
+                            .col-md-4
+                                label.form-label.fw-semibold(for="categoryId") Category *
+                                select#categoryId.form-select(name="categoryId" required)
+                                    option(value="" disabled selected=(!formData.categoryId)) — Select —
+                                    each cat in categories
+                                        option(value=cat.id selected=(formData.categoryId == cat.id)) #{cat.name}
+
+                            .col-md-6
+                                label.form-label.fw-semibold(for="make") Make (Manufacturer)
+                                input#make.form-control(
+                                    type="text"
+                                    name="make"
+                                    value=formData.make || ''
+                                    placeholder="e.g. Dell, Apple, Bosch"
+                                )
+
+                            .col-md-6
+                                label.form-label.fw-semibold(for="model") Model
+                                input#model.form-control(
+                                    type="text"
+                                    name="model"
+                                    value=formData.model || ''
+                                    placeholder="e.g. Inspiron 15 3000"
+                                )
+
+                            .col-md-6
+                                label.form-label.fw-semibold(for="serialNumber") Serial Number
+                                input#serialNumber.form-control(
+                                    type="text"
+                                    name="serialNumber"
+                                    value=formData.serialNumber || ''
+                                    placeholder="Physical serial number from the device"
+                                )
+
+                            .col-md-6
+                                label.form-label.fw-semibold(for="branch") Branch / Location
+                                input#branch.form-control(
+                                    type="text"
+                                    name="branch"
+                                    value=formData.branch || ''
+                                    placeholder="e.g. Head Office"
+                                )
+
+                        hr.my-4
+
+                        h6.fw-semibold.text-muted.text-uppercase.mb-3 Purchase Details
+
+                        .row.g-3
+                            .col-md-4
+                                label.form-label.fw-semibold(for="purchaseDate") Purchase Date
+                                input#purchaseDate.form-control(
+                                    type="date"
+                                    name="purchaseDate"
+                                    value=formData.purchaseDate || ''
+                                )
+
+                            .col-md-4
+                                label.form-label.fw-semibold(for="purchasePrice") Purchase Price (₹)
+                                input#purchasePrice.form-control(
+                                    type="number"
+                                    name="purchasePrice"
+                                    value=formData.purchasePrice || ''
+                                    min="0"
+                                    step="0.01"
+                                    placeholder="0.00"
+                                )
+
+                            .col-md-4
+                                label.form-label.fw-semibold(for="warrantyExpiry") Warranty Expiry
+                                input#warrantyExpiry.form-control(
+                                    type="date"
+                                    name="warrantyExpiry"
+                                    value=formData.warrantyExpiry || ''
+                                )
+
+                            .col-12
+                                label.form-label.fw-semibold(for="notes") Notes
+                                textarea#notes.form-control(
+                                    name="notes"
+                                    rows="3"
+                                    placeholder="Any additional notes about this asset"
+                                )= formData.notes || ''
+
+                        .alert.alert-info.mt-3
+                            i.bi.bi-info-circle.me-2
+                            | The system will auto-generate a unique Asset ID (e.g. AST-2026-0001). Initial status will be In Stock.
+
+                        .d-flex.gap-2.mt-4
+                            button.btn.btn-primary(type="submit")
+                                i.bi.bi-check-circle.me-2
+                                | Create Asset
+                            a.btn.btn-outline-secondary(href="/assets") Cancel

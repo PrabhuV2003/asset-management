@@ -1,0 +1,62 @@
+extends ../layout
+
+block content
+    .d-flex.align-items-center.justify-content-between.mb-4
+        div
+            h1.h3.fw-bold
+                i.bi.bi-tags.me-2.text-primary
+                | Asset Categories
+            p.text-muted.mb-0 Manage hardware and equipment types
+        if role === 'employee_master'
+            a.btn.btn-primary(href="/categories/new")
+                i.bi.bi-plus-circle.me-2
+                | Add Category
+
+    .card.border-0.shadow-sm
+        .card-body.p-0
+            table#tableCategories.table.table-hover.w-100.mb-0
+                thead.table-light
+                    tr
+                        th #
+                        th Category Name
+                        th Description
+                        th Status
+                        if role === 'employee_master'
+                            th Actions
+                tbody
+                    each cat, i in categories
+                        tr
+                            td= i + 1
+                            td
+                                strong= cat.name
+                            td= cat.description || '—'
+                            td
+                                if cat.isActive
+                                    span.badge.bg-success Active
+                                else
+                                    span.badge.bg-secondary Inactive
+                            if role === 'employee_master'
+                                td
+                                    a.btn.btn-sm.btn-outline-primary.me-1(href='/categories/' + cat.id + '/edit')
+                                        i.bi.bi-pencil
+                                    form(action='/categories/' + cat.id + '/toggle' method="POST" style="display:inline")
+                                        if cat.isActive
+                                            button.btn.btn-sm.btn-outline-danger(type="submit" onclick="return confirm('Deactivate this category?')")
+                                                i.bi.bi-toggle-off
+                                        else
+                                            button.btn.btn-sm.btn-outline-success(type="submit" onclick="return confirm('Activate this category?')")
+                                                i.bi.bi-toggle-on
+
+block scripts
+    link(rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css")
+    script(src="https://code.jquery.com/jquery-3.7.1.min.js")
+    script(src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js")
+    script(src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js")
+    script.
+        $(document).ready(function () {
+            $('#tableCategories').DataTable({
+                pageLength: 15,
+                columnDefs: [{ orderable: false, targets: -1 }],
+                language:   { emptyTable: 'No categories found. Add one above.' }
+            });
+        });

@@ -1,0 +1,99 @@
+extends ../layout
+
+block content
+    .d-flex.align-items-center.justify-content-between.mb-4
+        div
+            h1.h3.fw-bold
+                i.bi.bi-laptop.me-2.text-primary
+                | Assets
+            p.text-muted.mb-0 All company assets — use filters to narrow results
+        .d-flex.gap-2
+            a.btn.btn-outline-success(href="/assets/stock")
+                i.bi.bi-boxes.me-2
+                | Stock View
+            a.btn.btn-primary(href="/assets/new")
+                i.bi.bi-plus-circle.me-2
+                | Add Asset
+
+    //- Filter Bar
+    .card.border-0.shadow-sm.mb-4
+        .card-body.py-3
+            form(action="/assets" method="GET")
+                .row.g-2.align-items-end
+                    .col-md-4
+                        label.form-label.small.fw-semibold Status
+                        select.form-select.form-select-sm(name="status")
+                            option(value="" selected=(filters.status === '')) All Statuses
+                            option(value="in_stock" selected=(filters.status === 'in_stock')) In Stock
+                            option(value="issued" selected=(filters.status === 'issued')) Issued
+                            option(value="scrapped" selected=(filters.status === 'scrapped')) Scrapped
+                    .col-md-4
+                        label.form-label.small.fw-semibold Category
+                        select.form-select.form-select-sm(name="categoryId")
+                            option(value="" selected=(filters.categoryId === '')) All Categories
+                            each cat in categories
+                                option(value=cat.id selected=(filters.categoryId == cat.id)) #{cat.name}
+                    .col-md-2
+                        button.btn.btn-primary.btn-sm.w-100(type="submit")
+                            i.bi.bi-funnel.me-1
+                            | Filter
+                    .col-md-2
+                        a.btn.btn-outline-secondary.btn-sm.w-100(href="/assets")
+                            i.bi.bi-x-circle.me-1
+                            | Clear
+
+    .card.border-0.shadow-sm
+        .card-body.p-0
+            table#tableAssets.table.table-hover.w-100.mb-0
+                thead.table-light
+                    tr
+                        th Asset ID
+                        th Name
+                        th Category
+                        th Make / Model
+                        th Serial No.
+                        th Branch
+                        th Status
+                        th Actions
+                tbody
+                    each asset in assets
+                        tr
+                            td
+                                code= asset.assetId
+                            td= asset.name
+                            td= asset.category ? asset.category.name : '—'
+                            td
+                                if asset.make || asset.model
+                                    | #{asset.make || ''} #{asset.model || ''}
+                                else
+                                    span.text-muted —
+                            td= asset.serialNumber || '—'
+                            td= asset.branch || '—'
+                            td
+                                if asset.status === 'in_stock'
+                                    span.badge.bg-success In Stock
+                                else if asset.status === 'issued'
+                                    span.badge.bg-warning.text-dark Issued
+                                else
+                                    span.badge.bg-danger Scrapped
+                            td
+                                if asset.status !== 'scrapped'
+                                    a.btn.btn-sm.btn-outline-primary(href='/assets/' + asset.id + '/edit')
+                                        i.bi.bi-pencil
+                                else
+                                    span.text-muted.small —
+
+block scripts
+    link(rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css")
+    script(src="https://code.jquery.com/jquery-3.7.1.min.js")
+    script(src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js")
+    script(src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js")
+    script.
+        $(document).ready(function () {
+            $('#tableAssets').DataTable({
+                pageLength: 15,
+                order: [[0, 'asc']],
+                columnDefs: [{ orderable: false, targets: -1 }],
+                language: { emptyTable: 'No assets found for the selected filters.' }
+            });
+        });

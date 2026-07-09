@@ -31,7 +31,7 @@ html(lang="en")
       //- ── Main Layout ─────────────────────────────────────
       .d-flex(style="min-height: calc(100vh - 56px)")
 
-        //- Sidebar (will grow in later phases)
+        //- Sidebar
         nav#sidebar.bg-dark.text-white.py-4(style="width: 240px; min-width: 240px")
           ul.nav.flex-column.px-3
             li.nav-item
@@ -47,9 +47,17 @@ html(lang="en")
                   i.bi.bi-people.me-2
                   | Employees
               li.nav-item
-                a.nav-link.text-white-50(href="#")
+                a.nav-link.text-white-50(href='/categories')
+                  i.bi.bi-tags.me-2
+                  | Categories
+              li.nav-item
+                a.nav-link.text-white-50(href="/assets")
                   i.bi.bi-laptop.me-2
                   | Assets
+              li.nav-item
+                a.nav-link.text-white-50(href='/assets/stock')
+                  li.bi.bi-boxes.me-2
+                  | Stock View
 
             if session.role === 'employee'
             li.nav-item.mt-2
