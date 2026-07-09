@@ -5,6 +5,7 @@ const User  = require('./user');
 const Employee = require('./Employee');
 const AssetCategory = require('./AssetCategory')
 const Asset = require('./Asset')
+const AssetIssue = require('./AssetIssue')
 
 // ----- Associations -----
 // One Employee has exactly one user account (login credentials)
@@ -29,6 +30,58 @@ Asset.belongsTo(AssetCategory, {
     as: 'category'
 })
 
+// Asset <-> Employee (current holder)
+Asset.belongsTo(Employee, {
+    foreignKey: 'assignedToId',
+    as: 'assignedTo'
+})
+
+Employee.hasMany(Asset, {
+    foreignKey: 'assignedToId',
+    as: 'heldAssets'
+})
+
+// AssetIssue <-> Asset
+Asset.hasMany(AssetIssue, {
+    foreignKey: 'assetId',
+    as: 'issues'
+})
+
+AssetIssue.belongsTo(Asset, {
+    foreignKey: 'assetId',
+    as: 'asset'
+})
+
+// AssetIssue <-> Employee (issued to) 
+Employee.hasMany(AssetIssue, {
+    foreignKey: 'employeeId',
+    as: 'receivedIssues'
+})
+
+AssetIssue.belongsTo(Employee,  {
+    foreignKey: 'employeeId',
+    as: 'issuedTo'
+})
+
+// AssetIssue <-> Employee (issued by)
+Employee.hasMany(AssetIssue, {
+    foreignKey: 'issuedByEmployeeId',
+    as: 'processedIssues'
+})
+
+AssetIssue.belongsTo(Employee, {
+    foreignKey: 'issuedByEmployeeId',
+    as: 'issuedBy'
+})
+
+// AssetIssue <-> Employee (returned by)
+AssetIssue.belongsTo(Employee, {
+    foreignKey: 'returnedByEmployeeId',
+    as: 'returnedBy'
+})
+
+
+
 // ----- Sync -----
 // alter: true updates the table schema if models change - safe for development.
 // In production I use migrations instead.
@@ -50,5 +103,6 @@ module.exports ={
     User,
     Employee,
     AssetCategory,
-    Asset
+    Asset,
+    AssetIssue
 }

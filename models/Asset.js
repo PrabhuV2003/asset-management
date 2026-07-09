@@ -15,7 +15,6 @@ Asset.init(
         assetId: {
             type: DataTypes.STRING(30),
             allowNull: false,
-            unique: true,
             comment: 'Auto Generate Unique Identifier'
         },
         name: {
@@ -43,7 +42,6 @@ Asset.init(
         serialNumber: {
             type: DataTypes.STRING(100),
             allowNull: true,
-            unique: true,
             comment: 'Physical Serial Number From The Device'
         },
         purchaseDate: {
@@ -72,6 +70,11 @@ Asset.init(
         notes: {
             type: DataTypes.TEXT,
             allowNull: true
+        },
+        assignedToId: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            comment: 'Employee Currently Holding This  Asset (Null if in_stock or scrapped)'
         }
     },
     {
@@ -80,8 +83,7 @@ Asset.init(
         tableName:  'assets',
         timestamps: true,
         indexes: [
-            { unique: true, fields:['assetId'], name: 'assets_assetsId_unique' },
-            { unique: true, fields: ['serialNumber'], name: 'assets_serialNumber_unique', where: {serialNumber: { [require('sequelize').Op.ne]: null }} }
+            { unique: true, fields: ['assetId'], name: 'assets_assetId_unique' }
         ]
     }
 );
