@@ -3,6 +3,8 @@
 const sequelize = require('../config/database');
 const User  = require('./user');
 const Employee = require('./Employee');
+const AssetCategory = require('./AssetCategory')
+const Asset = require('./Asset')
 
 // ----- Associations -----
 // One Employee has exactly one user account (login credentials)
@@ -15,6 +17,17 @@ User.belongsTo(Employee, {
   foreignKey: 'employeeId',
   as: 'employee'
 });
+
+// AssetCatrgpry <-> Asset
+AssetCategory.hasMany(Asset, {
+    foreignKey: 'categoryId',
+    as: 'assets'
+})
+
+Asset.belongsTo(AssetCategory, {
+    foreignKey: 'categoryId',
+    as: 'category'
+})
 
 // ----- Sync -----
 // alter: true updates the table schema if models change - safe for development.
@@ -35,5 +48,7 @@ module.exports ={
     sequelize,
     syncDatabase,
     User,
-    Employee
+    Employee,
+    AssetCategory,
+    Asset
 }
