@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const {Asset, AssetCategory} = require('../models/index');
+const {Asset, AssetCategory, Employee, User} = require('../models/index');
 const { isLoggedIn, requireRole } = require('../middleware/auth')
 const {generateAssetId} = require('../utils/generateAssetId');
 
@@ -112,6 +112,64 @@ router.get('/stock', isLoggedIn, requireRole(VIEWERS), async(req, res) => {
         console.error('Stock View Error:', error);
         req.flash('error', 'Failed To Load Stock View.')
         res.redirect('/assets')
+    }
+})
+
+// ----- GET /assets/my
+router.get('/my', isLoggedIn, async(req, res) => {
+    try {
+        const user = await User.findOne({
+            where: {
+                userId: req.session.userId
+            }
+        });
+
+        if(!user || !user.employeeId) {
+            req.flash('error', 'No Employee Profile Linked To Your Account.');
+            return res.redirect('/dashboard');
+        }
+
+        const myAssets = await Asset.findAll({
+            where: {
+                assignedToId: user.employeeId,
+                status: 'issued'
+            },
+            include:  [
+                { model: AssetCategory, as: 'category', attributes: ['name'] },
+                { model: Employee,      as: 'assignedTo', attributes: ['fullName'] }
+            ],
+            order: [['assetId', 'ASC']]
+        })
+
+        // Geting the active issue records for these assets (to get issue date)
+        const assetIds =  myAssets.map(function(a) {
+            return a.id;
+        })
+
+        var issueMap = {};
+
+        if(assetIds.length > 0) {
+            const { AssetIssue } = require('../models/index')
+            const activeIssues = await AssetIssue.findAll({
+                where:  {
+                    assetId: assetIds,
+                    status: 'active'
+                }
+            })
+            activeIssues.forEach(function(issue) {
+                issueMap[issue.assetId] = issue;
+            })
+        }
+
+        res.render('assets/my_assets', {
+            title: 'My Assets - Asset Management',
+            myAssets: myAssets,
+            issueMap: iss
+        })
+    } catch (error) {
+        console.error('My Assets Error:', error);
+        req.flash('error', 'Failed To Load Your Assets.')
+        res.redirect('/dashboard')
     }
 })
 
