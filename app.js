@@ -52,10 +52,14 @@ app.use((req, res, next) => {
 const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard')
 const employeeRoutes  = require('./routes/employees');
+const categoryRoutes  = require('./routes/categories')
+const assetRoutes = require('./routes/assets')
 
 app.use('/', authRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/employees', employeeRoutes);
+app.use('/categories', categoryRoutes);
+app.use('/assets', assetRoutes);
 
 // ----- 404 Handler -----
 app.use((req, res) => {
