@@ -1,68 +1,120 @@
 extends ../layout
 
 block content
-  .mb-4
-    h1.h3.fw-bold
-      i.bi.bi-speedometer2.me-2.text-primary
-      | Dashboard
-    p.text-muted Logged in as #[strong= userHandle] · #[span.badge.bg-primary= displayName]
+    .mb-4
+        h1.h3.fw-bold
+            i.bi.bi-speedometer2.me-2.text-primary
+            | Dashboard
+        p.text-muted.mb-0 Welcome back,
+            strong  #{userHandle || 'User'}
+            |  — here is your system overview.
 
-  if role === 'employee_master'
+    //- ----- Stat Cards -----
+    .row.g-3.mb-4
+
+        .col-md-4.col-lg-2
+            .card.border-0.shadow-sm.h-100
+                .card-body.text-center.py-4
+                    i.bi.bi-people.fs-2.text-primary.mb-2
+                    div.h4.fw-bold.mb-0= totalEmployees
+                    div.small.text-muted Active Employees
+
+        .col-md-4.col-lg-2
+            .card.border-0.shadow-sm.h-100
+                .card-body.text-center.py-4
+                    i.bi.bi-laptop.fs-2.text-secondary.mb-2
+                    div.h4.fw-bold.mb-0= totalAssets
+                    div.small.text-muted Total Assets
+
+        .col-md-4.col-lg-2
+            .card.border-0.shadow-sm.h-100
+                .card-body.text-center.py-4
+                    i.bi.bi-boxes.fs-2.text-success.mb-2
+                    div.h4.fw-bold.mb-0= inStockCount
+                    div.small.text-muted In Stock
+
+        .col-md-4.col-lg-2
+            .card.border-0.shadow-sm.h-100
+                .card-body.text-center.py-4
+                    i.bi.bi-box-arrow-right.fs-2.text-warning.mb-2
+                    div.h4.fw-bold.mb-0= issuedCount
+                    div.small.text-muted Issued
+
+        .col-md-4.col-lg-2
+            .card.border-0.shadow-sm.h-100
+                .card-body.text-center.py-4
+                    i.bi.bi-trash3.fs-2.text-danger.mb-2
+                    div.h4.fw-bold.mb-0= scrappedCount
+                    div.small.text-muted Scrapped
+
+        .col-md-4.col-lg-2
+            .card.border-0.shadow-sm.h-100
+                .card-body.text-center.py-4
+                    i.bi.bi-tags.fs-2.text-info.mb-2
+                    div.h4.fw-bold.mb-0= totalCategories
+                    div.small.text-muted Categories
+
+    //- ----- Total Value Banner -----
+    .card.border-0.shadow-sm.mb-4(style="background: linear-gradient(135deg,#0d6efd,#0dcaf0)")
+        .card-body.d-flex.justify-content-between.align-items-center.py-4.px-4
+            div
+                div.small.text-white-50.text-uppercase.fw-semibold Total Active Asset Value
+                div.display-6.fw-bold.text-white
+                    | ₹ #{Number(totalValue).toLocaleString('en-IN', {minimumFractionDigits: 2})}
+            i.bi.bi-currency-rupee.text-white-50(style="font-size:4rem;opacity:0.3")
+
+    //- ----- Quick Links + Recent Activity -----
     .row.g-4
-      .col-md-3
-        .card.border-0.shadow-sm.h-100
-          .card-body.text-center
-            i.bi.bi-people-fill.text-primary(style="font-size: 2rem")
-            h2.mt-2.fw-bold --
-            p.text-muted.mb-0 Total Employees
-      .col-md-3
-        .card.border-0.shadow-sm.h-100
-          .card-body.text-center
-            i.bi.bi-laptop.text-success(style="font-size: 2rem")
-            h2.mt-2.fw-bold --
-            p.text-muted.mb-0 Assets in Stock
-      .col-md-3
-        .card.border-0.shadow-sm.h-100
-          .card-body.text-center
-            i.bi.bi-arrow-right-circle.text-warning(style="font-size: 2rem")
-            h2.mt-2.fw-bold --
-            p.text-muted.mb-0 Assets Issued
-      .col-md-3
-        .card.border-0.shadow-sm.h-100
-          .card-body.text-center
-            i.bi.bi-trash.text-danger(style="font-size: 2rem")
-            h2.mt-2.fw-bold --
-            p.text-muted.mb-0 Scrapped Assets
-    .alert.alert-info.mt-4
-      i.bi.bi-info-circle.me-2
-      | More dashboard data will be available as you complete setup.
-  else if role === 'asset_master'
-    .row.g-4
-      .col-md-4
-        .card.border-0.shadow-sm.h-100
-          .card-body.text-center
-            i.bi.bi-box-seam.text-primary(style="font-size: 2rem")
-            h2.mt-2.fw-bold --
-            p.text-muted.mb-0 Assets in Stock
-      .col-md-4
-        .card.border-0.shadow-sm.h-100
-          .card-body.text-center
-            i.bi.bi-arrow-repeat.text-success(style="font-size: 2rem")
-            h2.mt-2.fw-bold --
-            p.text-muted.mb-0 Issued Today
-      .col-md-4
-        .card.border-0.shadow-sm.h-100
-          .card-body.text-center
-            i.bi.bi-arrow-return-left.text-warning(style="font-size: 2rem")
-            h2.mt-2.fw-bold --
-            p.text-muted.mb-0 Returned Today
-    .alert.alert-info.mt-4
-      i.bi.bi-info-circle.me-2
-      | More dashboard data will be available as you complete setup.
-  else
-    .card.border-0.shadow-sm
-      .card-body.p-4
-        h2.h5.fw-bold
-          i.bi.bi-card-checklist.me-2.text-primary
-          | My Assigned Assets
-        p.text-muted You currently have no assets assigned. Your assets will appear here once issued.
+
+        .col-lg-4
+            .card.border-0.shadow-sm.h-100
+                .card-header.bg-white.border-bottom
+                    h6.fw-bold.mb-0
+                        i.bi.bi-lightning-charge.me-2.text-primary
+                        | Quick Actions
+                .card-body
+                    .d-grid.gap-2
+                        a.btn.btn-outline-primary(href="/assets/new")
+                            i.bi.bi-plus-circle.me-2
+                            | Add New Asset
+                        a.btn.btn-outline-success(href="/assets?status=in_stock")
+                            i.bi.bi-boxes.me-2
+                            | View In-Stock Assets
+                        a.btn.btn-outline-warning(href="/assets?status=issued")
+                            i.bi.bi-box-arrow-right.me-2
+                            | View Issued Assets
+                        if role === 'employee_master' || role === 'asset_master'
+                            a.btn.btn-outline-info(href="/reports")
+                                i.bi.bi-bar-chart-line.me-2
+                                | View Reports
+                        a.btn.btn-outline-secondary(href="/assets/stock")
+                            i.bi.bi-boxes.me-2
+                            | Stock View
+
+        .col-lg-8
+            .card.border-0.shadow-sm.h-100
+                .card-header.bg-white.border-bottom
+                    h6.fw-bold.mb-0
+                        i.bi.bi-clock-history.me-2.text-primary
+                        | Recent Issue Activity
+                .card-body.p-0
+                    if recentActivity.length === 0
+                        .text-center.py-5
+                            i.bi.bi-inbox.text-muted(style="font-size:2.5rem")
+                            p.text-muted.mt-2 No issue activity yet.
+                    else
+                        table.table.table-hover.mb-0
+                            thead.table-light
+                                tr
+                                    th Asset ID
+                                    th Asset Name
+                                    th Issued To
+                                    th Date
+                            tbody
+                                each act in recentActivity
+                                    tr
+                                        td
+                                            code= act.asset ? act.asset.assetId : '—'
+                                        td= act.asset ? act.asset.name : '—'
+                                        td= act.issuedTo ? act.issuedTo.fullName : '—'
+                                        td= act.createdAt ? new Date(act.createdAt).toLocaleDateString('en-IN') : '—'
