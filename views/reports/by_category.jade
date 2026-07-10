@@ -1,0 +1,50 @@
+extends ../layout
+
+block content
+    .d-flex.align-items-center.mb-4
+        a.btn.btn-outline-secondary.me-3(href="/reports")
+            i.bi.bi-arrow-left
+        div
+            h1.h3.fw-bold
+                i.bi.bi-tags.me-2.text-primary
+                | Report: Assets by Category
+            p.text-muted.mb-0 Breakdown of assets and value per category
+
+    .card.border-0.shadow-sm
+        .card-body.p-0
+            table#tableByCat.table.table-hover.w-100.mb-0
+                thead.table-light
+                    tr
+                        th Category
+                        th Total
+                        th In Stock
+                        th Issued
+                        th Scrapped
+                        th Total Value (₹)
+                tbody
+                    each cat in categories
+                        tr
+                            td
+                                strong= cat
+                            td= grouped[cat].total
+                            td
+                                span.badge.bg-success= grouped[cat].inStock
+                            td
+                                span.badge.bg-warning.text-dark= grouped[cat].issued
+                            td
+                                span.badge.bg-danger= grouped[cat].scrapped
+                            td= Number(grouped[cat].value).toLocaleString('en-IN', {minimumFractionDigits: 2})
+
+block scripts
+    link(rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css")
+    script(src="https://code.jquery.com/jquery-3.7.1.min.js")
+    script(src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js")
+    script(src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js")
+    script.
+        $(document).ready(function () {
+            $('#tableByCat').DataTable({
+                pageLength: 25,
+                order: [[0, 'asc']],
+                language: { emptyTable: 'No data.' }
+            });
+        });

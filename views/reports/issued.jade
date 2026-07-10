@@ -1,0 +1,58 @@
+extends ../layout
+
+block content
+    .d-flex.align-items-center.justify-content-between.mb-4
+        div
+            .d-flex.align-items-center
+                a.btn.btn-outline-secondary.me-3(href="/reports")
+                    i.bi.bi-arrow-left
+                div
+                    h1.h3.fw-bold
+                        i.bi.bi-box-arrow-right.me-2.text-warning
+                        | Report: Currently Issued Assets
+                    p.text-muted.mb-0 All assets currently out with employees
+        span.badge.bg-warning.text-dark.fs-6= activeIssues.length + ' assets issued'
+
+    .card.border-0.shadow-sm
+        .card-body.p-0
+            table#tableIssued.table.table-hover.w-100.mb-0
+                thead.table-light
+                    tr
+                        th Asset ID
+                        th Asset Name
+                        th Category
+                        th Issued To
+                        th Department
+                        th Branch
+                        th Issued On
+                        th Days Out
+                tbody
+                    each iss in activeIssues
+                        tr
+                            td
+                                code= iss.asset ? iss.asset.assetId : '—'
+                            td= iss.asset ? iss.asset.name : '—'
+                            td= iss.asset && iss.asset.category ? iss.asset.category.name : '—'
+                            td= iss.issuedTo ? iss.issuedTo.fullName : '—'
+                            td= iss.issuedTo ? iss.issuedTo.department || '—' : '—'
+                            td= iss.issuedTo ? iss.issuedTo.branch || '—' : '—'
+                            td= iss.issuedAt ? new Date(iss.issuedAt).toLocaleDateString('en-IN') : '—'
+                            td
+                                if iss.issuedAt
+                                    = Math.floor((new Date() - new Date(iss.issuedAt)) / (1000 * 60 * 60 * 24))
+                                else
+                                    | —
+
+block scripts
+    link(rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css")
+    script(src="https://code.jquery.com/jquery-3.7.1.min.js")
+    script(src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js")
+    script(src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js")
+    script.
+        $(document).ready(function () {
+            $('#tableIssued').DataTable({
+                pageLength: 20,
+                order: [[6, 'asc']],
+                language: { emptyTable: 'No assets are currently issued.' }
+            });
+        });

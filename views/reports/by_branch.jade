@@ -1,0 +1,50 @@
+extends ../layout
+
+block content
+    .d-flex.align-items-center.mb-4
+        a.btn.btn-outline-secondary.me-3(href="/reports")
+            i.bi.bi-arrow-left
+        div
+            h1.h3.fw-bold
+                i.bi.bi-geo-alt.me-2.text-success
+                | Report: Assets by Branch
+            p.text-muted.mb-0 Breakdown of assets and value per branch/location
+
+    .card.border-0.shadow-sm
+        .card-body.p-0
+            table#tableByBranch.table.table-hover.w-100.mb-0
+                thead.table-light
+                    tr
+                        th Branch / Location
+                        th Total
+                        th In Stock
+                        th Issued
+                        th Scrapped
+                        th Total Value (₹)
+                tbody
+                    each branch in branches
+                        tr
+                            td
+                                strong= branch
+                            td= grouped[branch].total
+                            td
+                                span.badge.bg-success= grouped[branch].inStock
+                            td
+                                span.badge.bg-warning.text-dark= grouped[branch].issued
+                            td
+                                span.badge.bg-danger= grouped[branch].scrapped
+                            td= Number(grouped[branch].value).toLocaleString('en-IN', {minimumFractionDigits: 2})
+
+block scripts
+    link(rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css")
+    script(src="https://code.jquery.com/jquery-3.7.1.min.js")
+    script(src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js")
+    script(src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js")
+    script.
+        $(document).ready(function () {
+            $('#tableByBranch').DataTable({
+                pageLength: 25,
+                order: [[0, 'asc']],
+                language: { emptyTable: 'No data.' }
+            });
+        });

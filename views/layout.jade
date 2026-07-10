@@ -43,27 +43,31 @@ html(lang="en")
               li.nav-item.mt-2
                 small.text-white-50.text-uppercase.px2(style="font-size:0.7rem") Management
               li.nav-item
-                a.nav-link.text-white-50(href="/employees")
+                a.nav-link.text-white(href="/employees")
                   i.bi.bi-people.me-2
                   | Employees
               li.nav-item
-                a.nav-link.text-white-50(href='/categories')
+                a.nav-link.text-white(href='/categories')
                   i.bi.bi-tags.me-2
                   | Categories
               li.nav-item
-                a.nav-link.text-white-50(href="/assets")
+                a.nav-link.text-white(href="/assets")
                   i.bi.bi-laptop.me-2
                   | Assets
               li.nav-item
-                a.nav-link.text-white-50(href='/assets/stock')
-                  li.bi.bi-boxes.me-2
+                a.nav-link.text-white(href='/assets/stock')
+                  i.bi.bi-boxes.me-2
                   | Stock View
+              li.nav-item
+                a.nav-link.text-white(href="/reports")
+                  i.bi.bi-bar-chart-line.me-2
+                  | Reports
 
             if session.role === 'employee'
             li.nav-item.mt-2
               small.text-white-50.text-uppercase.px-2(style="font-size:0.7rem") My Account
               li.nav-item
-                a.nav-link.text-white-50(href="#")
+                a.nav-link.text-white(href="/assets/my")
                   i.bi.bi-card-checklist.me-2
                   | My Assets
 

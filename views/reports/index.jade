@@ -1,0 +1,97 @@
+extends ../layout
+
+block content
+    .d-flex.align-items-center.justify-content-between.mb-4
+        div
+            h1.h3.fw-bold
+                i.bi.bi-bar-chart-line.me-2.text-primary
+                | Reports
+            p.text-muted.mb-0 Analytics and data exports
+
+    //- Summary Cards
+    .row.g-3.mb-4
+        .col-md-3
+            .card.border-0.shadow-sm.text-center.py-3
+                div.h4.fw-bold.text-secondary.mb-0= totalAssets
+                div.small.text-muted Total Assets
+        .col-md-3
+            .card.border-0.shadow-sm.text-center.py-3
+                div.h4.fw-bold.text-success.mb-0= inStockCount
+                div.small.text-muted In Stock
+        .col-md-3
+            .card.border-0.shadow-sm.text-center.py-3
+                div.h4.fw-bold.text-warning.mb-0= issuedCount
+                div.small.text-muted Issued
+        .col-md-3
+            .card.border-0.shadow-sm.text-center.py-3
+                div.h4.fw-bold.text-danger.mb-0= warrantyCount
+                div.small.text-muted Warranty Expiring (90 days)
+
+    //- Report Links
+    .row.g-4.mb-4
+        .col-md-6
+            .card.border-0.shadow-sm.h-100
+                .card-body.p-4
+                    h5.fw-bold.mb-1
+                        i.bi.bi-tags.me-2.text-primary
+                        | Assets by Category
+                    p.text-muted.small.mb-3 View total assets, status breakdown and value per category.
+                    a.btn.btn-outline-primary.w-100(href="/reports/by-category")
+                        | View Report
+
+        .col-md-6
+            .card.border-0.shadow-sm.h-100
+                .card-body.p-4
+                    h5.fw-bold.mb-1
+                        i.bi.bi-geo-alt.me-2.text-success
+                        | Assets by Branch
+                    p.text-muted.small.mb-3 View total assets, status breakdown and value per branch/location.
+                    a.btn.btn-outline-success.w-100(href="/reports/by-branch")
+                        | View Report
+
+        .col-md-6
+            .card.border-0.shadow-sm.h-100
+                .card-body.p-4
+                    h5.fw-bold.mb-1
+                        i.bi.bi-box-arrow-right.me-2.text-warning
+                        | Currently Issued Assets
+                    p.text-muted.small.mb-3 All assets currently issued — with employee, department and issue date.
+                    a.btn.btn-outline-warning.w-100(href="/reports/issued")
+                        | View Report
+
+        .col-md-6
+            .card.border-0.shadow-sm.h-100
+                .card-body.p-4
+                    h5.fw-bold.mb-1
+                        i.bi.bi-shield-exclamation.me-2.text-danger
+                        | Warranty Expiry Report
+                    p.text-muted.small.mb-3 Assets with warranty expiring within 90 days and already expired.
+                    a.btn.btn-outline-danger.w-100(href="/reports/warranty")
+                        | View Report
+
+    //- CSV Exports
+    .card.border-0.shadow-sm
+        .card-header.bg-white
+            h6.fw-bold.mb-0
+                i.bi.bi-download.me-2.text-primary
+                | Data Exports (CSV)
+        .card-body
+            .row.g-3
+                .col-md-6
+                    .d-flex.align-items-center.gap-3
+                        i.bi.bi-file-earmark-spreadsheet.fs-2.text-success
+                        div
+                            div.fw-semibold Assets CSV
+                            div.small.text-muted Full asset list with all fields
+                        a.btn.btn-success.btn-sm.ms-auto(href="/reports/export/assets.csv")
+                            i.bi.bi-download.me-1
+                            | Download
+                .col-md-6
+                    .d-flex.align-items-center.gap-3
+                        i.bi.bi-file-earmark-spreadsheet.fs-2.text-info
+                        div
+                            div.fw-semibold Issue History CSV
+                            div.small.text-muted All issue / return / scrap records
+                        a.btn.btn-info.btn-sm.ms-auto(href="/reports/export/issues.csv")
+                            i.bi.bi-download.me-1
+                            | Download

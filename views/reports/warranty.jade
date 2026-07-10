@@ -1,0 +1,98 @@
+extends ../layout
+
+block content
+    .d-flex.align-items-center.mb-4
+        a.btn.btn-outline-secondary.me-3(href="/reports")
+            i.bi.bi-arrow-left
+        div
+            h1.h3.fw-bold
+                i.bi.bi-shield-exclamation.me-2.text-danger
+                | Report: Warranty Expiry
+            p.text-muted.mb-0 Monitor warranty status across your active assets
+
+    //- Expiring within 90 days
+    .card.border-0.shadow-sm.mb-4
+        .card-header.bg-warning.bg-opacity-10.border-warning
+            h6.fw-bold.mb-0.text-warning
+                i.bi.bi-exclamation-triangle.me-2
+                | Expiring Within 90 Days
+                span.badge.bg-warning.text-dark.ms-2= expiringAssets.length
+        .card-body.p-0
+            if expiringAssets.length === 0
+                .text-center.py-4
+                    p.text-muted.mb-0 No assets expiring in the next 90 days.
+            else
+                table#tableExpiring.table.table-hover.mb-0
+                    thead.table-light
+                        tr
+                            th Asset ID
+                            th Name
+                            th Category
+                            th Status
+                            th Assigned To
+                            th Warranty Expires
+                    tbody
+                        each asset in expiringAssets
+                            tr
+                                td
+                                    code= asset.assetId
+                                td= asset.name
+                                td= asset.category ? asset.category.name : '—'
+                                td
+                                    if asset.status === 'in_stock'
+                                        span.badge.bg-success In Stock
+                                    else if asset.status === 'issued'
+                                        span.badge.bg-warning.text-dark Issued
+                                td= asset.assignedTo ? asset.assignedTo.fullName : '—'
+                                td.fw-semibold.text-warning= asset.warrantyExpiry || '—'
+
+    //- Already expired
+    .card.border-0.shadow-sm
+        .card-header.bg-danger.bg-opacity-10.border-danger
+            h6.fw-bold.mb-0.text-danger
+                i.bi.bi-x-circle.me-2
+                | Already Expired
+                span.badge.bg-danger.ms-2= expiredAssets.length
+        .card-body.p-0
+            if expiredAssets.length === 0
+                .text-center.py-4
+                    p.text-muted.mb-0 No assets with expired warranties.
+            else
+                table#tableExpired.table.table-hover.mb-0
+                    thead.table-light
+                        tr
+                            th Asset ID
+                            th Name
+                            th Category
+                            th Status
+                            th Assigned To
+                            th Expired On
+                    tbody
+                        each asset in expiredAssets
+                            tr
+                                td
+                                    code= asset.assetId
+                                td= asset.name
+                                td= asset.category ? asset.category.name : '—'
+                                td
+                                    if asset.status === 'in_stock'
+                                        span.badge.bg-success In Stock
+                                    else if asset.status === 'issued'
+                                        span.badge.bg-warning.text-dark Issued
+                                td= asset.assignedTo ? asset.assignedTo.fullName : '—'
+                                td.text-danger= asset.warrantyExpiry || '—'
+
+block scripts
+    link(rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css")
+    script(src="https://code.jquery.com/jquery-3.7.1.min.js")
+    script(src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js")
+    script(src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js")
+    script.
+        $(document).ready(function () {
+            if ($('#tableExpiring').length) {
+                $('#tableExpiring').DataTable({ pageLength: 15, order: [[5, 'asc']] });
+            }
+            if ($('#tableExpired').length) {
+                $('#tableExpired').DataTable({ pageLength: 15, order: [[5, 'asc']] });
+            }
+        });
