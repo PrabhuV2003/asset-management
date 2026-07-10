@@ -52,7 +52,13 @@ block content
                             li It will be removed from stock views and issue workflows
                             li If currently issued, the open issue record will be automatically closed
 
-                    form(action='/issues/scrap/' + asset.id method="POST" novalidate)
+                    form(action='/issues/scrap/' + asset.id method="POST")
+
+                        if errors && errors.length
+                            .alert.alert-danger.mb-3
+                                ul.mb-0
+                                    each err in errors
+                                        li= err
 
                         .mb-4
                             label.form-label.fw-semibold(for="scrapReason") Reason for Scrapping *

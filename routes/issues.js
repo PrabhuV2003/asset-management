@@ -11,11 +11,7 @@ const ALL = ['employee_master', 'asset_master', 'employee']
 // ----- Helper -----
 // Get The Logge-In Employees DB Record
 const getLoggedInEmployee = async(req) => {
-    const user = await User.findOne({
-        where: {
-            userId: req.session.userId
-        }
-    }) 
+    const user = await User.findByPk(req.session.userId);
     if(!user || !user.employeeId) return null;
     return Employee.findByPk(user.employeeId);
 };
@@ -67,7 +63,7 @@ router.get('/issue/:assetId', isLoggedIn, requireRole(STAFF), async(req, res) =>
         const employees = await Employee.findAll({
             where: {isActive: true},
             order: [['fullName', 'ASC']],
-            attributes: ['id', 'fullname', 'department', 'branch']
+            attributes: ['id', 'fullName', 'department', 'branch']
         })
 
         res.render('issues/issue_form', {
@@ -111,8 +107,8 @@ router.post('/issue/:assetId', isLoggedIn, requireRole(STAFF), async(req, res) =
         return res.render('issues/issue_form', {
             title: 'Issue Asset - Asset Management',
             asset: asset,
-            employees, employees,
-            errors, errs
+            employees: employees,
+            errors: errs
         })
     };
 
@@ -130,12 +126,12 @@ router.post('/issue/:assetId', isLoggedIn, requireRole(STAFF), async(req, res) =
 
         // Creating The Issue Record
         await AssetIssue.create({
-            assetId: asset.isSoftDeleted,
-            employeeId: parseInt(employeeId, 10),
+            assetId:            asset.id,
+            employeeId:         parseInt(employeeId, 10),
             issuedByEmployeeId: loggedInEmployee ? loggedInEmployee.id : null,
-            issuedAt: new Date(),
-            issueNoted: issueNotes ? issueNotes.trim() : null,
-            status: 'active'
+            issuedAt:           new Date(),
+            issueNotes:         issueNotes ? issueNotes.trim() : null,
+            status:             'active'
         })
 
         //Update The Asset
@@ -155,7 +151,7 @@ router.post('/issue/:assetId', isLoggedIn, requireRole(STAFF), async(req, res) =
 
 // ----- GET /issues/return/:issueId
 // Show Retrun Form
-router.get('/retrun/:issueId', isLoggedIn, requireRole(STAFF), async(req, res) => {
+router.get('/return/:issueId', isLoggedIn, requireRole(STAFF), async(req, res) => {
     try {
         const issue = await AssetIssue.findByPk(req.params.issueId, {
             include: [
@@ -184,7 +180,7 @@ router.get('/retrun/:issueId', isLoggedIn, requireRole(STAFF), async(req, res) =
 // ----- POST /issues/return/:issueId
 // Process return
 router.post('/return/:issueId', isLoggedIn, requireRole(STAFF), async(req, res) => {
-    const {returnNoted} = req.body;
+    const {returnNotes} = req.body;
 
     try {
         const issue = await AssetIssue.findByPk(req.params.issueId, {
@@ -202,7 +198,7 @@ router.post('/return/:issueId', isLoggedIn, requireRole(STAFF), async(req, res) 
         await issue.update({
             returnedAt: new Date(),
             returnedByEmployeeId: loggedInEmployee ? loggedInEmployee.id : null,
-            returnNotes:  returnNoted ? returnNoted.trim() : null,
+            returnNotes:  returnNotes ? returnNotes.trim() : null,
             status: 'returned'
         })
 
@@ -268,6 +264,21 @@ router.post('/scrap/:assetId', isLoggedIn, requireRole(STAFF), async(req, res) =
             return res.redirect('/assets')
         }
 
+        // Server-side validation — reason is required
+        if(!scrapReason || !scrapReason.trim()) {
+            const fullAsset = await Asset.findByPk(req.params.assetId, {
+                include: [
+                    { model: AssetCategory, as: 'category', attributes: ['name'] },
+                    { model: Employee, as: 'assignedTo', attributes: ['fullName'] }
+                ]
+            });
+            return res.render('issues/scrap_form', {
+                title: 'Scrap Asset - Asset Management',
+                asset: fullAsset,
+                errors: ['Reason for scrapping is required.']
+            });
+        }
+
         // If Currently Issued, Close the active issuce record first
         if(asset.status === 'issued') {
             const activeIssue = await AssetIssue.findOne({
@@ -277,7 +288,7 @@ router.post('/scrap/:assetId', isLoggedIn, requireRole(STAFF), async(req, res) =
             if(activeIssue) {
                 await activeIssue.update({
                     returnedAt:  new Date(),
-                    returnNoted: 'Asset Scrapped. Reason ' + (scrapReason || 'No Reason Provided.'),
+                    returnNotes: 'Asset Scrapped. Reason: ' + (scrapReason || 'No Reason Provided.'),
                     status: 'scrapped'
                 })
             }
@@ -293,7 +304,7 @@ router.post('/scrap/:assetId', isLoggedIn, requireRole(STAFF), async(req, res) =
         return res.redirect('/assets')
 
     } catch (error) {
-        console.erroe('Scrap Asset Error:', error);
+        console.error('Scrap Asset Error:', error);
         req.flash('error','Failed To Scrap Asset.')
         res.redirect('/assets');
     }

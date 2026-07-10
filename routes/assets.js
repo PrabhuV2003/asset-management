@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const {Asset, AssetCategory, Employee, User} = require('../models/index');
+const {Asset, AssetCategory, Employee, User, AssetIssue} = require('../models/index');
 const { isLoggedIn, requireRole } = require('../middleware/auth')
 const {generateAssetId} = require('../utils/generateAssetId');
 
@@ -37,6 +37,18 @@ router.get('/', isLoggedIn, requireRole(VIEWERS), async(req, res) => {
             where: { isActive: true },
             order: [['name', 'ASC']]
         })
+
+        // Attach activeIssueId to each issued asset so the Return button knows which record to close
+        var issuedAssets = assets.filter(function(a) { return a.status === 'issued'; });
+        if (issuedAssets.length > 0) {
+            var issuedIds = issuedAssets.map(function(a) { return a.id; });
+            var activeIssues = await AssetIssue.findAll({
+                where: { assetId: issuedIds, status: 'active' }
+            });
+            var issueMap = {};
+            activeIssues.forEach(function(iss) { issueMap[iss.assetId] = iss.id; });
+            assets.forEach(function(a) { a.activeIssueId = issueMap[a.id] || null; });
+        }
 
         res.render('assets/index', {
             title: 'Assets - Asset Management',
@@ -118,11 +130,7 @@ router.get('/stock', isLoggedIn, requireRole(VIEWERS), async(req, res) => {
 // ----- GET /assets/my
 router.get('/my', isLoggedIn, async(req, res) => {
     try {
-        const user = await User.findOne({
-            where: {
-                userId: req.session.userId
-            }
-        });
+        const user = await User.findByPk(req.session.userId);
 
         if(!user || !user.employeeId) {
             req.flash('error', 'No Employee Profile Linked To Your Account.');
@@ -164,7 +172,8 @@ router.get('/my', isLoggedIn, async(req, res) => {
         res.render('assets/my_assets', {
             title: 'My Assets - Asset Management',
             myAssets: myAssets,
-            issueMap: iss
+            issueMap: issueMap,
+            role: req.session.role
         })
     } catch (error) {
         console.error('My Assets Error:', error);
