@@ -53,13 +53,17 @@ const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard')
 const employeeRoutes  = require('./routes/employees');
 const categoryRoutes  = require('./routes/categories')
-const assetRoutes = require('./routes/assets')
+const assetRoutes  = require('./routes/assets')
+const issueRoutes  = require('./routes/issues')
+const reportRoutes = require('./routes/reports');
 
 app.use('/', authRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/employees', employeeRoutes);
 app.use('/categories', categoryRoutes);
-app.use('/assets', assetRoutes);
+app.use('/assets',  assetRoutes);
+app.use('/issues',  issueRoutes);
+app.use('/reports', reportRoutes);
 
 // ----- 404 Handler -----
 app.use((req, res) => {
